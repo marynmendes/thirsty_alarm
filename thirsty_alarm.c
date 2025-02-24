@@ -1,6 +1,11 @@
 #include <stdio.h>
 #include "pico/stdlib.h"
-#include "pio_matriz.pio.h"
+#include "hardware/pio.h"
+#include "hardware/clocks.h"
+#include "pico/bootrom.h"
+
+
+#include "thirsty_alarm.pio.h"
 
 
 int main()
