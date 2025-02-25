@@ -10,6 +10,7 @@
 //definições de gpio
 #define humidity_sensor 26
 #define matriz_led 7
+#define led_red 13
 
 //definição número de leds na matriz
 #define pixels_matriz 25
@@ -60,6 +61,10 @@ int main()
     adc_select_input(0);
     //inicializa matriz de led
     init_matriz_led(pio, &offset, &sm);
+    //inicializa led RGD vermelho
+    gpio_init(led_red);
+    gpio_set_dir(led_red, true);
+    gpio_put(led_red, false);
 
     while (true) {
         sleep_ms(1000);
