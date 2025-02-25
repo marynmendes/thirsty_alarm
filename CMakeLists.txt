@@ -51,7 +51,8 @@ target_sources(thirsty_alarm PRIVATE thirsty_alarm.c)
 # Add the standard library to the build
 target_link_libraries(thirsty_alarm
         pico_stdlib
-        hardware_pio)
+        hardware_pio
+        hardware_adc)
 
 # Add the standard include files to the build
 target_include_directories(thirsty_alarm PRIVATE
