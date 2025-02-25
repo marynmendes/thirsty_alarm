@@ -35,7 +35,7 @@ pico_sdk_init()
 
 # Add executable. Default name is the project name, version 0.1
 
-add_executable(thirsty_alarm thirsty_alarm.c )
+add_executable(thirsty_alarm thirsty_alarm.c lib/ssd1306.c)
 
 pico_set_program_name(thirsty_alarm "thirsty_alarm")
 pico_set_program_version(thirsty_alarm "0.1")
@@ -52,7 +52,8 @@ target_sources(thirsty_alarm PRIVATE thirsty_alarm.c)
 target_link_libraries(thirsty_alarm
         pico_stdlib
         hardware_pio
-        hardware_adc)
+        hardware_adc
+        hardware_i2c)
 
 # Add the standard include files to the build
 target_include_directories(thirsty_alarm PRIVATE
