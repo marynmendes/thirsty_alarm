@@ -349,7 +349,7 @@ int main()
         sprintf(str_x, "%d", humidity_value);
         ssd1306_fill(&ssd, false);
         ssd1306_send_data(&ssd);
-        if(tipo = 1){
+        if(tipo == 1){
             if(humidity_value < 40){
                 ssd1306_draw_string(&ssd, "LOW HUMIDITY", 17, 22);
                 ssd1306_draw_string(&ssd, str_x, 19, 35);
@@ -373,7 +373,7 @@ int main()
                 executar_ilustracao(pio, sm, &zerar_matriz);
             }
         
-        } else if(tipo = 2){
+        } else if(tipo == 2){
             if(humidity_value < 60){
                 ssd1306_draw_string(&ssd, "LOW HUMIDITY", 17, 26);
                 ssd1306_draw_string(&ssd, str_x, 19, 35);
@@ -397,7 +397,7 @@ int main()
                 executar_ilustracao(pio, sm, &zerar_matriz);
             }
         
-        } else if(tipo = 3){
+        } else if(tipo == 3){
             if(humidity_value < 60){
                 ssd1306_draw_string(&ssd, "LOW HUMIDITY", 17, 26);
                 ssd1306_draw_string(&ssd, str_x, 19, 35);
