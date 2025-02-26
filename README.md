@@ -1,10 +1,7 @@
 # Babá Floral :herb::rotating_light:
----
 
 ## Decrição 
-##### Esse projeto utiliza a placa BitDogLab para simular um sensor que faz a 
-##### leitura dos níveis de umidade, com o objetivo de auxiliar o usuário no
-##### cuidado com plantas. 
+##### Esse projeto utiliza a placa BitDogLab para simular um sensor que faz a leitura dos níveis de umidade, com o objetivo de auxiliar o usuário no cuidado com plantas. 
 ---
 
 ## Materias usados
@@ -20,13 +17,10 @@
 
 ## Como utilizar
 ### Configuração:
-##### É necessário fazer a instalação do SDK do Raspberry Pi Pico W. Após a instalação,
-##### clone esse repositório no seu ambiente de desenvolvimento e faça a compilação do
-##### projeto, gerando um arquivo .uf2.
+##### É necessário fazer a instalação do SDK do Raspberry Pi Pico W. Após a instalação, clone esse repositório no seu ambiente de desenvolvimento e faça a compilação do projeto, gerando um arquivo .uf2.
 
-### Placa BitDogLab
-##### Conecte a placa em modo BOOTSEL no seu computador e passe o arquivo .uf2 para esse
-##### dispositivo.
+### Placa BitDogLab:
+##### Conecte a placa em modo BOOTSEL no seu computador e passe o arquivo .uf2 para esse dispositivo.
 ---
 
 ## Autora
