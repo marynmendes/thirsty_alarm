@@ -24,12 +24,20 @@
 //definição número de leds na matriz
 #define pixels_matriz 25
 
+//variáveis de situação de cada uma das opções
+bool estado_op1 = true;
+bool estado_op2 = false;
+bool estado_op3 = false;
+//variável para determinar o fim da parte de cadastramento da planta
+bool fim_cadastro = false;
+
 //estrutura para ilustrações na matriz de led
 typedef struct {
     double frames[25][pixels_matriz];
     int num_frames;
     double r, g, b;
     int fps;
+    int identifier;
 } Ilustracao;
 
 //configuração de cores 
@@ -90,7 +98,8 @@ Ilustracao welcome = {
     .r = 0.0,
     .g = 1.0,
     .b = 0.2,
-    .fps = 4
+    .fps = 4,
+    .identifier = 0
 };
 
 Ilustracao sun_op1 = {
@@ -103,7 +112,8 @@ Ilustracao sun_op1 = {
     .r = 1.0,
     .g = 0.5,
     .b = 0.0,
-    .fps = 3
+    .fps = 3,
+    .identifier = 1
 };
 
 Ilustracao rain_min_op2 = {
@@ -119,7 +129,8 @@ Ilustracao rain_min_op2 = {
     .r = 0.2,
     .g = 0.0,
     .b = 1.0,
-    .fps = 5
+    .fps = 5,
+    .identifier = 2
 };
 
 Ilustracao rain_max_op3 = {
@@ -135,7 +146,8 @@ Ilustracao rain_max_op3 = {
     .r = 0.2,
     .g = 0.0,
     .b = 1.0,
-    .fps = 5
+    .fps = 5,
+    .identifier = 3
 };
 
 Ilustracao humidity_alarm = {
@@ -149,7 +161,8 @@ Ilustracao humidity_alarm = {
     .r = 1.0,
     .g = 0.0,
     .b = 0.0,
-    .fps = 6
+    .fps = 6,
+    .identifier = 4
 };
 
 void executar_ilustracao(PIO pio, uint sm, Ilustracao *ilustracao) {
@@ -169,6 +182,98 @@ void executar_inicio(PIO pio, uint sm, ssd1306_t ssd){
     ssd1306_send_data(&ssd);
     executar_ilustracao(pio, sm, &welcome);
     sleep_ms(1000);
+}
+
+void exibir_op1(PIO pio, uint sm, ssd1306_t ssd, bool estado){
+    if(estado == true){
+        ssd1306_draw_string(&ssd, "SELECT A PLANT", 7, 1);
+        ssd1306_line(&ssd, 0, 10, 127, 10, true);
+        ssd1306_line(&ssd, 0, 53, 127, 53, true);
+        ssd1306_draw_string(&ssd, "PICK A  NEXT B", 7, 55);
+        ssd1306_line(&ssd, 40, 59, 44, 59, true);
+        ssd1306_line(&ssd, 104, 59, 108, 59, true);
+        ssd1306_draw_string(&ssd, "SUCCULENT", 27, 20);
+        ssd1306_draw_string(&ssd, "OR", 55, 29);
+        ssd1306_draw_string(&ssd, "CACTUS", 41, 38);
+        ssd1306_send_data(&ssd);
+        executar_ilustracao(pio, sm, &sun_op1);
+    } else return;
+}
+
+void exibir_op2(PIO pio, uint sm, ssd1306_t ssd, bool estado){
+    if(estado == true){
+        ssd1306_draw_string(&ssd, "SELECT A PLANT", 7, 1);
+        ssd1306_line(&ssd, 0, 10, 127, 10, true);
+        ssd1306_line(&ssd, 0, 53, 127, 53, true);
+        ssd1306_draw_string(&ssd, "PICK A  NEXT B", 7, 55);
+        ssd1306_line(&ssd, 40, 59, 44, 59, true);
+        ssd1306_line(&ssd, 104, 59, 108, 59, true);
+        ssd1306_draw_string(&ssd, "EVERGREEN", 25, 26);
+        ssd1306_send_data(&ssd);
+        executar_ilustracao(pio, sm, &rain_min_op2);
+    } else return;
+}
+
+void exibir_op3(PIO pio, uint sm, ssd1306_t ssd, bool estado){
+    if(estado == true){
+        ssd1306_draw_string(&ssd, "SELECT A PLANT", 7, 1);
+        ssd1306_line(&ssd, 0, 10, 127, 10, true);
+        ssd1306_line(&ssd, 0, 53, 127, 53, true);
+        ssd1306_draw_string(&ssd, "PICK A  NEXT B", 7, 55);
+        ssd1306_line(&ssd, 40, 59, 44, 59, true);
+        ssd1306_line(&ssd, 104, 59, 108, 59, true);
+        ssd1306_draw_string(&ssd, "TROPICAL", 27, 26);
+        ssd1306_send_data(&ssd);
+        executar_ilustracao(pio, sm, &rain_max_op3);
+    } else return;
+}
+
+int get_planta(Ilustracao *ilustracao){
+    return ilustracao->identifier;
+}
+
+void executar_escolhas(PIO pio, uint sm, ssd1306_t ssd){
+    ssd1306_draw_string(&ssd, "SELECT A PLANT", 7, 1);
+    ssd1306_line(&ssd, 0, 10, 127, 10, true);
+    ssd1306_line(&ssd, 0, 53, 127, 53, true);
+    ssd1306_draw_string(&ssd, "PICK A  NEXT B", 7, 55);
+    ssd1306_line(&ssd, 40, 59, 44, 59, true);
+    ssd1306_line(&ssd, 104, 59, 108, 59, true);
+    exibir_op1(pio, sm, ssd, estado_op1);
+    exibir_op2(pio, sm, ssd, estado_op2);
+    exibir_op3(pio, sm, ssd, estado_op3);
+    ssd1306_send_data(&ssd);
+}
+void gpio_irq_handler(uint gpio, uint32_t eventos){
+    if(gpio == button_b){
+        if (estado_op1 == true && estado_op2 == false && estado_op3 == false){
+            estado_op2 = true;
+            estado_op1 = false;
+            estado_op3 = false;
+        } else if (estado_op1 == false && estado_op2 == true && estado_op3 == false){
+            estado_op3 = true;
+            estado_op1 = false;
+            estado_op2 = false;
+        } else if (estado_op1 == false && estado_op2 == false && estado_op3 == true){
+            estado_op1 = true;
+            estado_op2 = false;
+            estado_op3 = false;
+        }
+  
+    } 
+    
+    else if (gpio == button_a){
+        if (estado_op1 == true){
+            get_planta(&sun_op1);
+            fim_cadastro = true;
+        } else if (estado_op2 == true){
+            get_planta(&rain_min_op2);
+            fim_cadastro = true;
+        } else if (estado_op3 == true){
+            get_planta(&rain_max_op3);
+            fim_cadastro = true;
+        }
+    }
 }
 
 int main()
@@ -207,8 +312,23 @@ int main()
     ssd1306_send_data(&ssd);
     ssd1306_fill(&ssd, false);
     ssd1306_send_data(&ssd);
+
+    //inicio do programa
+    executar_inicio(pio, sm, ssd);
+    ssd1306_fill(&ssd, false);
+    ssd1306_send_data(&ssd);
+
+    gpio_set_irq_enabled_with_callback(button_b, GPIO_IRQ_EDGE_FALL, true, &gpio_irq_handler);
+    gpio_set_irq_enabled_with_callback(button_a, GPIO_IRQ_EDGE_FALL, true, &gpio_irq_handler);
+    
+    while (fim_cadastro == false){
+        executar_escolhas(pio, sm, ssd);
+        ssd1306_fill(&ssd, false);
+        ssd1306_send_data(&ssd);
+    }
     
     while (true) {
-        sleep_ms(1000);
+        executar_ilustracao(pio, sm, &humidity_alarm);
+        gpio_put(led_red, true);
     }
 }
