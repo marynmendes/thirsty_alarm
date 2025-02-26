@@ -1,7 +1,7 @@
 # Babá Floral :herb::rotating_light:
 
 ## Descrição 
-##### Esse projeto utiliza a placa BitDogLab para simular um sensor que faz a leitura dos níveis de umidade, com o objetivo de auxiliar o usuário no cuidado com plantas. 
+##### Esse projeto utiliza um Joystick para simular valores encontrados por um sensor que faz a leitura dos níveis de umidade, com o objetivo de auxiliar o usuário no cuidado com plantas. 
 
 
 ## Materiais usados
