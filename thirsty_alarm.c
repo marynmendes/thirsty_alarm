@@ -164,6 +164,13 @@ void executar_ilustracao(PIO pio, uint sm, Ilustracao *ilustracao) {
     }
 }
 
+void executar_inicio(PIO pio, uint sm, ssd1306_t ssd){
+    ssd1306_draw_string(&ssd, "WELCOME", 37, 31);
+    ssd1306_send_data(&ssd);
+    executar_ilustracao(pio, sm, &welcome);
+    sleep_ms(1000);
+}
+
 int main()
 {
     PIO pio = pio0;
@@ -200,7 +207,7 @@ int main()
     ssd1306_send_data(&ssd);
     ssd1306_fill(&ssd, false);
     ssd1306_send_data(&ssd);
-
+    
     while (true) {
         sleep_ms(1000);
     }
