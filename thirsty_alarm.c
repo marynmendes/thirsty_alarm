@@ -30,6 +30,8 @@ bool estado_op2 = false;
 bool estado_op3 = false;
 //variável para determinar o fim da parte de cadastramento da planta
 bool fim_cadastro = false;
+//variável para achar tipo de planta
+int tipo;
 
 //estrutura para ilustrações na matriz de led
 typedef struct {
@@ -165,6 +167,19 @@ Ilustracao humidity_alarm = {
     .identifier = 4
 };
 
+Ilustracao zerar_matriz = {
+    .frames = {
+        //1    2    3    4    5    6    7    8    9   10   11   12   13   14   15   16   17   18   19   20   21   22   23   24   25
+        {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
+    },
+    .num_frames = 1,
+    .r = 0.0,
+    .g = 0.0,
+    .b = 0.0,
+    .fps = 1,
+    .identifier = 5  
+};
+
 void executar_ilustracao(PIO pio, uint sm, Ilustracao *ilustracao) {
     int frame_delay = 1000 / ilustracao->fps; // Calcula o tempo entre frames em milissegundos
     for (int frame = 0; frame < ilustracao->num_frames; frame++) {
@@ -244,6 +259,7 @@ void executar_escolhas(PIO pio, uint sm, ssd1306_t ssd){
     exibir_op3(pio, sm, ssd, estado_op3);
     ssd1306_send_data(&ssd);
 }
+
 void gpio_irq_handler(uint gpio, uint32_t eventos){
     if(gpio == button_b){
         if (estado_op1 == true && estado_op2 == false && estado_op3 == false){
@@ -264,13 +280,13 @@ void gpio_irq_handler(uint gpio, uint32_t eventos){
     
     else if (gpio == button_a){
         if (estado_op1 == true){
-            get_planta(&sun_op1);
+            tipo = get_planta(&sun_op1);
             fim_cadastro = true;
         } else if (estado_op2 == true){
-            get_planta(&rain_min_op2);
+            tipo = get_planta(&rain_min_op2);
             fim_cadastro = true;
         } else if (estado_op3 == true){
-            get_planta(&rain_max_op3);
+            tipo = get_planta(&rain_max_op3);
             fim_cadastro = true;
         }
     }
@@ -328,7 +344,82 @@ int main()
     }
     
     while (true) {
-        executar_ilustracao(pio, sm, &humidity_alarm);
-        gpio_put(led_red, true);
+        int humidity_value = adc_read() / 40.95;
+        char str_x[3];
+        sprintf(str_x, "%d", humidity_value);
+        ssd1306_fill(&ssd, false);
+        ssd1306_send_data(&ssd);
+        if(tipo = 1){
+            if(humidity_value < 40){
+                ssd1306_draw_string(&ssd, "LOW HUMIDITY", 17, 22);
+                ssd1306_draw_string(&ssd, str_x, 19, 35);
+                ssd1306_draw_string(&ssd, "PERCENT", 44, 35);
+                ssd1306_send_data(&ssd);
+                executar_ilustracao(pio, sm, &humidity_alarm);
+                gpio_put(led_red, true);
+            } else if (humidity_value > 50){
+                ssd1306_draw_string(&ssd, "HIGH HUMIDITY", 13, 26);
+                ssd1306_draw_string(&ssd, str_x, 19, 35);
+                ssd1306_draw_string(&ssd, "PERCENT", 44, 35);
+                ssd1306_send_data(&ssd);
+                executar_ilustracao(pio, sm, &humidity_alarm);
+                gpio_put(led_red, true);
+            } else {
+                ssd1306_draw_string(&ssd, "GOOD HUMIDITY", 13, 26);
+                ssd1306_draw_string(&ssd, str_x, 19, 35);
+                ssd1306_draw_string(&ssd, "PERCENT", 44, 35);
+                ssd1306_send_data(&ssd);
+                gpio_put(led_red, false);
+                executar_ilustracao(pio, sm, &zerar_matriz);
+            }
+        
+        } else if(tipo = 2){
+            if(humidity_value < 60){
+                ssd1306_draw_string(&ssd, "LOW HUMIDITY", 17, 26);
+                ssd1306_draw_string(&ssd, str_x, 19, 35);
+                ssd1306_draw_string(&ssd, "PERCENT", 44, 35);
+                ssd1306_send_data(&ssd);
+                executar_ilustracao(pio, sm, &humidity_alarm);
+                gpio_put(led_red, true);
+            } else if (humidity_value > 70){
+                ssd1306_draw_string(&ssd, "HIGH HUMIDITY", 13, 26);
+                ssd1306_draw_string(&ssd, str_x, 19, 35);
+                ssd1306_draw_string(&ssd, "PERCENT", 44, 35);
+                ssd1306_send_data(&ssd);
+                executar_ilustracao(pio, sm, &humidity_alarm);
+                gpio_put(led_red, true);
+            } else {
+                ssd1306_draw_string(&ssd, "GOOD HUMIDITY", 13, 26);
+                ssd1306_draw_string(&ssd, str_x, 19, 35);
+                ssd1306_draw_string(&ssd, "PERCENT", 44, 35);
+                ssd1306_send_data(&ssd);
+                gpio_put(led_red, false);
+                executar_ilustracao(pio, sm, &zerar_matriz);
+            }
+        
+        } else if(tipo = 3){
+            if(humidity_value < 60){
+                ssd1306_draw_string(&ssd, "LOW HUMIDITY", 17, 26);
+                ssd1306_draw_string(&ssd, str_x, 19, 35);
+                ssd1306_draw_string(&ssd, "PERCENT", 44, 35);
+                ssd1306_send_data(&ssd);
+                executar_ilustracao(pio, sm, &humidity_alarm);
+                gpio_put(led_red, true);
+            } else if (humidity_value > 80){
+                ssd1306_draw_string(&ssd, "HIGH HUMIDITY", 13, 26);
+                ssd1306_draw_string(&ssd, str_x, 19, 35);
+                ssd1306_draw_string(&ssd, "PERCENT", 44, 35);
+                ssd1306_send_data(&ssd);
+                executar_ilustracao(pio, sm, &humidity_alarm);
+                gpio_put(led_red, true);
+            } else {
+                ssd1306_draw_string(&ssd, "GOOD HUMIDITY", 13, 26);
+                ssd1306_draw_string(&ssd, str_x, 19, 35);
+                ssd1306_draw_string(&ssd, "PERCENT", 44, 35);
+                ssd1306_send_data(&ssd);
+                gpio_put(led_red, false);
+                executar_ilustracao(pio, sm, &zerar_matriz);
+            }
+        }
     }
 }
