@@ -20,6 +20,7 @@
 #define i2c_sda 14
 #define i2c_scl 15
 #define endereco 0x3C
+#define buzzer 21
 
 //definição número de leds na matriz
 #define pixels_matriz 25
@@ -292,6 +293,17 @@ void gpio_irq_handler(uint gpio, uint32_t eventos){
     }
 }
 
+void buzzer_alarm(uint frequency, bool on_or_off) {
+    uint32_t period_us = 1000000 / frequency; 
+    uint32_t half_period_us = period_us / 2;  
+    if(on_or_off == true){
+        gpio_put(buzzer, 1);
+        sleep_us(half_period_us);
+        gpio_put(buzzer, 0);
+        sleep_us(half_period_us);
+    } else gpio_put(buzzer, 0);
+}
+
 int main()
 {
     PIO pio = pio0;
@@ -322,6 +334,11 @@ int main()
     gpio_set_function(i2c_scl, GPIO_FUNC_I2C); 
     gpio_pull_up(i2c_sda);
     gpio_pull_up(i2c_scl);
+    //inicializa buzzer
+    gpio_init(buzzer);
+    gpio_set_dir(buzzer, true);
+    gpio_put(buzzer, false);
+
     ssd1306_t ssd; 
     ssd1306_init(&ssd, WIDTH, HEIGHT, false, endereco, i2c_port);
     ssd1306_config(&ssd);
@@ -357,6 +374,7 @@ int main()
                 ssd1306_send_data(&ssd);
                 executar_ilustracao(pio, sm, &humidity_alarm);
                 gpio_put(led_red, true);
+                buzzer_alarm(4000, true);
             } else if (humidity_value > 50){
                 ssd1306_draw_string(&ssd, "HIGH HUMIDITY", 13, 26);
                 ssd1306_draw_string(&ssd, str_x, 19, 35);
@@ -364,12 +382,14 @@ int main()
                 ssd1306_send_data(&ssd);
                 executar_ilustracao(pio, sm, &humidity_alarm);
                 gpio_put(led_red, true);
+                buzzer_alarm(4000, true);
             } else {
                 ssd1306_draw_string(&ssd, "GOOD HUMIDITY", 13, 26);
                 ssd1306_draw_string(&ssd, str_x, 19, 35);
                 ssd1306_draw_string(&ssd, "PERCENT", 44, 35);
                 ssd1306_send_data(&ssd);
                 gpio_put(led_red, false);
+                buzzer_alarm(4000, false);
                 executar_ilustracao(pio, sm, &zerar_matriz);
             }
         
@@ -381,6 +401,7 @@ int main()
                 ssd1306_send_data(&ssd);
                 executar_ilustracao(pio, sm, &humidity_alarm);
                 gpio_put(led_red, true);
+                buzzer_alarm(4000, true);
             } else if (humidity_value > 70){
                 ssd1306_draw_string(&ssd, "HIGH HUMIDITY", 13, 26);
                 ssd1306_draw_string(&ssd, str_x, 19, 35);
@@ -388,12 +409,14 @@ int main()
                 ssd1306_send_data(&ssd);
                 executar_ilustracao(pio, sm, &humidity_alarm);
                 gpio_put(led_red, true);
+                buzzer_alarm(4000, true);
             } else {
                 ssd1306_draw_string(&ssd, "GOOD HUMIDITY", 13, 26);
                 ssd1306_draw_string(&ssd, str_x, 19, 35);
                 ssd1306_draw_string(&ssd, "PERCENT", 44, 35);
                 ssd1306_send_data(&ssd);
                 gpio_put(led_red, false);
+                buzzer_alarm(4000, false);
                 executar_ilustracao(pio, sm, &zerar_matriz);
             }
         
@@ -405,6 +428,7 @@ int main()
                 ssd1306_send_data(&ssd);
                 executar_ilustracao(pio, sm, &humidity_alarm);
                 gpio_put(led_red, true);
+                buzzer_alarm(4000, true);
             } else if (humidity_value > 80){
                 ssd1306_draw_string(&ssd, "HIGH HUMIDITY", 13, 26);
                 ssd1306_draw_string(&ssd, str_x, 19, 35);
@@ -412,12 +436,14 @@ int main()
                 ssd1306_send_data(&ssd);
                 executar_ilustracao(pio, sm, &humidity_alarm);
                 gpio_put(led_red, true);
+                buzzer_alarm(4000, true);
             } else {
                 ssd1306_draw_string(&ssd, "GOOD HUMIDITY", 13, 26);
                 ssd1306_draw_string(&ssd, str_x, 19, 35);
                 ssd1306_draw_string(&ssd, "PERCENT", 44, 35);
                 ssd1306_send_data(&ssd);
                 gpio_put(led_red, false);
+                buzzer_alarm(4000, false);
                 executar_ilustracao(pio, sm, &zerar_matriz);
             }
         }
